@@ -1,0 +1,43 @@
+# MWP-BERT on Chinese Dataset
+
+## Network Training
+
+**1. How to train the network on Math23k dataset only:**
+```
+python math23k.py
+```
+
+**2. How to train the network on Math23k dataset and Ape-clean jointly:**
+```
+python math23k_wape.py
+```
+## Weight Loading
+
+To load the pre-trained MWP-BERT model or other pre-trained models in Huggingface, there are two lines of code need changing:
+
+**1. src/models.py, Line 232:**
+```
+self.bert_rnn = BertModel.from_pretrained("hfl/chinese-bert-wwm-ext")
+```
+Load the model from your desired path.
+
+**2. src/models.py, Line 803/903/1039:**
+```
+tokenizer = BertTokenizer.from_pretrained("hfl/chinese-bert-wwm-ext")
+```
+Load the tokenizer from your backbone model.
+
+## MWP-BERT weights
+
+TODO...
+
+## Citation
+
+```
+@inproceedings{liang2022mwp,
+      title={MWP-BERT: Numeracy-Augmented Pre-training for Math Word Problem Solving}, 
+      author={Zhenwen Liang, Jipeng Zhang, Lei Wang, Wei Qin, Yunshi Lan, Jie Shao, and Xiangliang Zhang},
+      booktitle={Findings of NAACL},
+      year={2022}
+}
+```

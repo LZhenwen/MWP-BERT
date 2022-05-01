@@ -794,6 +794,105 @@ def indexes_from_sentence(lang, sentence, tree=False):
         res.append(lang.word2index["EOS"])
     return res
 
+def prepare_data_23k(pairs_trained, pairs_tested, trim_min_count, generate_nums, copy_nums, tree=False):
+    input_lang = Lang()
+    output_lang = Lang()
+    train_pairs = []
+    test_pairs = []
+    test_pairs_ape = []
+    tokenizer = BertTokenizer.from_pretrained("hfl/chinese-bert-wwm-ext")
+    print("Indexing words...")
+    for pair in pairs_trained:
+        if not tree:
+            input_lang.add_sen_to_vocab(pair[0])
+            output_lang.add_sen_to_vocab(pair[1])
+        elif pair[-1]:
+            input_lang.add_sen_to_vocab(pair[0])
+            output_lang.add_sen_to_vocab(pair[1])
+    input_lang.build_input_lang(trim_min_count)
+    if tree:
+        output_lang.build_output_lang_for_tree(generate_nums, copy_nums)
+    else:
+        output_lang.build_output_lang(generate_nums, copy_nums)
+    for pair in pairs_trained:
+        num_stack = []
+        for idx in range(len(pair[0])):
+            if pair[0][idx] == 'NUM':
+                pair[0][idx] = 'n'
+        for word in pair[1]:
+            temp_num = []
+            flag_not = True
+            if word not in output_lang.index2word:
+                flag_not = False
+                for i, j in enumerate(pair[2]):
+                    if j == word:
+                        temp_num.append(i)
+
+            if not flag_not and len(temp_num) != 0:
+                num_stack.append(temp_num)
+            if not flag_not and len(temp_num) == 0:
+                num_stack.append([_ for _ in range(len(pair[2]))])
+        #if num_stack != []:
+        #    print(num_stack)
+        #    print('!!!')
+        #inputs = tokenizer(pair[0], is_split_into_words=True,return_tensors="pt",add_special_tokens=False)
+        inputs = tokenizer(pair[0], is_split_into_words=True,return_tensors="pt", add_special_tokens=False)
+
+        num_pos = []
+        for idx,i in enumerate(inputs['input_ids'].squeeze()):
+            if tokenizer.convert_ids_to_tokens(int(i)) == 'n':
+                num_pos.append(idx)
+        
+        num_stack.reverse()
+        input_cell = indexes_from_sentence(input_lang, pair[0])
+        output_cell = indexes_from_sentence(output_lang, pair[1], tree)
+        #print(len(output_cell))
+        # train_pairs.append((input_cell, len(input_cell), output_cell, len(output_cell),
+        #                     pair[2], pair[3], num_stack, pair[4]))
+        if output_lang.word2index["UNK"] in output_cell:
+            continue
+        if len(input_cell) > 100 or len(output_cell) > 20:
+            continue
+        train_pairs.append((input_cell, inputs['input_ids'].squeeze().size(0), output_cell, len(output_cell),
+                            pair[2], num_pos, num_stack, inputs))
+
+    print('Indexed %d words in input language, %d words in output' % (input_lang.n_words, output_lang.n_words))
+    print('Number of training data %d' % (len(train_pairs)))
+    for pair in pairs_tested:
+        num_stack = []
+        for idx in range(len(pair[0])):
+            if pair[0][idx] == 'NUM':
+                pair[0][idx] = 'n'
+        for word in pair[1]:
+            temp_num = []
+            flag_not = True
+            if word not in output_lang.index2word:
+                flag_not = False
+                for i, j in enumerate(pair[2]):
+                    if j == word:
+                        temp_num.append(i)
+
+            if not flag_not and len(temp_num) != 0:
+                num_stack.append(temp_num)
+            if not flag_not and len(temp_num) == 0:
+                num_stack.append([_ for _ in range(len(pair[2]))])
+        inputs = tokenizer(pair[0], is_split_into_words=True,return_tensors="pt", add_special_tokens=False)
+
+        num_pos = []
+        for idx,i in enumerate(inputs['input_ids'].squeeze()):
+            if tokenizer.convert_ids_to_tokens(int(i)) == 'n':
+                num_pos.append(idx)
+        num_stack.reverse()
+        input_cell = indexes_from_sentence(input_lang, pair[0])
+        output_cell = indexes_from_sentence(output_lang, pair[1], tree)
+        if output_lang.word2index["UNK"] in output_cell:
+            continue
+        if len(input_cell) > 100 or len(output_cell) > 20:
+            continue
+        test_pairs.append((input_cell, inputs['input_ids'].squeeze().size(0), output_cell, len(output_cell),
+                           pair[2], num_pos, num_stack, inputs))
+    print('Number of testing data %d' % (len(test_pairs)))
+    return input_lang, output_lang, train_pairs, test_pairs
 
 def prepare_data(pairs_trained, pairs_tested, pairs_tested_ape, trim_min_count, generate_nums, copy_nums, tree=False):
     input_lang = Lang()

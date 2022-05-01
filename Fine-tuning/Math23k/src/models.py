@@ -229,11 +229,9 @@ class EncoderSeq(nn.Module):
         super(EncoderSeq, self).__init__()
 
         self.hidden_size = hidden_size
-        #self.bert_rnn = BertModel.from_pretrained("hfl/chinese-bert-wwm-ext")
-        #self.bert_rnn = BertModel.from_pretrained("/ibex/scratch/lianz0a/bert2tree-master/MWPbert-retrained/checkpoint-10000")
-        #self.bert_rnn = BertModel.from_pretrained("/ibex/scratch/lianz0a/bert2tree-master/models/self_epoch_173")
-        self.bert_rnn = BertModel.from_pretrained("/ibex/scratch/lianz0a/bert2tree-master/models/all_epoch_30")
-        #self.bert_rnn = BertModel.from_pretrained("/ibex/scratch/lianz0a/bert2tree-master/models/epoch_198_full")
+        self.bert_rnn = BertModel.from_pretrained("hfl/chinese-bert-wwm-ext")
+        #self.bert_rnn = BertModel.from_pretrained("Your Path")
+        
     def forward(self, input_seqs, input_lengths, bert_encoding, hidden=None):
         # Note: we run this all at once (over multiple batches of multiple sequences)
         length_max = max([i['input_ids'].squeeze().size(0) for i in bert_encoding])
