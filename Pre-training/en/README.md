@@ -1,4 +1,4 @@
-## Pre-training on English dataset
+## Pre-training on English dataset.
 
 **1. How to pre-train a MWP-BERT model:**
 ```
