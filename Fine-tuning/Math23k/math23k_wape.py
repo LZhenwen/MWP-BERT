@@ -12,7 +12,7 @@ batch_size = 32
 embedding_size = 128
 hidden_size = 768
 n_epochs = 100
-learning_rate = 4e-5
+learning_rate = 3e-5
 weight_decay = 1e-5
 beam_size = 5
 n_layers = 2
@@ -69,9 +69,9 @@ merge = Merge(hidden_size=hidden_size, embedding_size=embedding_size)
 
 
 encoder_optimizer = torch.optim.AdamW(encoder.parameters(), lr=learning_rate, weight_decay=1e-2)
-predict_optimizer = torch.optim.Adam(predict.parameters(), lr=learning_rate, weight_decay=weight_decay)
-generate_optimizer = torch.optim.Adam(generate.parameters(), lr=learning_rate, weight_decay=weight_decay)
-merge_optimizer = torch.optim.Adam(merge.parameters(), lr=learning_rate, weight_decay=weight_decay)
+predict_optimizer = torch.optim.AdamW(predict.parameters(), lr=learning_rate * 10, weight_decay=weight_decay)
+generate_optimizer = torch.optim.AdamW(generate.parameters(), lr=learning_rate* 10, weight_decay=weight_decay)
+merge_optimizer = torch.optim.AdamW(merge.parameters(), lr=learning_rate* 10, weight_decay=weight_decay)
 
 encoder_scheduler = torch.optim.lr_scheduler.StepLR(encoder_optimizer, step_size=25, gamma=0.5)
 predict_scheduler = torch.optim.lr_scheduler.StepLR(predict_optimizer, step_size=25, gamma=0.5)
