@@ -13,7 +13,7 @@ def read_json(path):
     return file
 
 torch.cuda.set_device(0)
-batch_size = 50
+batch_size = 32
 embedding_size = 128
 hidden_size = 768
 n_epochs = 85
