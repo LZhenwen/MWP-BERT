@@ -29,7 +29,7 @@ Load the tokenizer from your backbone model.
 
 ## MWP-BERT weights
 
-TODO...
+Please find at https://drive.google.com/drive/folders/1QC7b6dnUSbHLJQHJQNwecPNiQQoBFu8T?usp=sharing.
 
 ## Citation
 
