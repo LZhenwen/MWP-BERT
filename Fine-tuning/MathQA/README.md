@@ -28,9 +28,10 @@ Please find at https://drive.google.com/drive/folders/1QC7b6dnUSbHLJQHJQNwecPNiQ
 
 ```
 @inproceedings{liang2022mwp,
-      title={MWP-BERT: Numeracy-Augmented Pre-training for Math Word Problem Solving}, 
-      author={Zhenwen Liang, Jipeng Zhang, Lei Wang, Wei Qin, Yunshi Lan, Jie Shao, and Xiangliang Zhang},
-      booktitle={Findings of NAACL},
-      year={2022}
+  title={MWP-BERT: Numeracy-Augmented Pre-training for Math Word Problem Solving},
+  author={Liang, Zhenwen and Zhang, Jipeng and Wang, Lei and Qin, Wei and Lan, Yunshi and Shao, Jie and Zhang, Xiangliang},
+  booktitle={Findings of NAACL 2022},
+  pages={997--1009},
+  year={2022}
 }
 ```
